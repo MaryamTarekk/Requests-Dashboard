@@ -15,6 +15,15 @@ async function enableMocking() {
     },
     onUnhandledRequest: "warn",
   });
+
+  // Make sure the current page is controlled by the MSW worker
+  if (!navigator.serviceWorker.controller) {
+    await new Promise((resolve) => {
+      navigator.serviceWorker.addEventListener("controllerchange", resolve, {
+        once: true,
+      });
+    });
+  }
 }
 
 enableMocking().then(() => {
