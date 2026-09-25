@@ -7,7 +7,11 @@ import Providers from "./app/providers.jsx";
 import { router } from "./app/router.jsx";
 
 async function enableMocking() {
+  console.log("1 - Starting MSW...");
+
   const { worker } = await import("./mocks/browser");
+
+  console.log("2 - Worker imported:", worker);
 
   await worker.start({
     serviceWorker: {
@@ -16,14 +20,7 @@ async function enableMocking() {
     onUnhandledRequest: "warn",
   });
 
-  // Make sure the current page is controlled by the MSW worker
-  if (!navigator.serviceWorker.controller) {
-    await new Promise((resolve) => {
-      navigator.serviceWorker.addEventListener("controllerchange", resolve, {
-        once: true,
-      });
-    });
-  }
+  console.log("3 - MSW started successfully");
 }
 
 enableMocking().then(() => {
